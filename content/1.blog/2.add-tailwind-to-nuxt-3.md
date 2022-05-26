@@ -1,0 +1,120 @@
+# Add TailwindCSS To Nuxt 3
+
+## What is Tailwind CSS?
+
+Tailwind CSS is a utility-first CSS framework for rapidly building custom, high-fidelity, and fully responsive designs with a minimal amount of effort.
+
+> [TailwindCSS Website](https://tailwindcss.com/)
+
+## Create Your Nuxt App
+
+Create a Nuxt 3 app is super easy & quick
+
+```bash
+npx nuxi init [APP_NAME]
+```
+
+After running this command, install the dependencies
+
+```bash
+npm install
+```
+
+## Manual Installation
+
+We can install Tailwind CSS manually by doing the following
+
+- **Install dev dependencies**
+
+```bash
+npm install -D tailwindcss postcss@latest autoprefixer@latest
+```
+
+- **Inintialize Tailwind Config**
+
+```bash
+npx tailwindcss init
+```
+
+- **Add PostCSS config to our nuxt.config.ts file**
+
+```js
+postcss: {
+    plugins: {
+        tailwindcss: {},
+        autoprefixer: {},
+      },
+    },
+```
+
+- **Add file paths to tailwind config**
+
+```js
+module.exports = {
+	content: [
+		"./components/**/*.{js,vue,ts}",
+		"./layouts/**/*.vue",
+		"./pages/**/*.vue",
+		"./plugins/**/*.{js,ts}",
+		"./nuxt.config.{js,ts}",
+		"./content/**/*.{md,yml,json,yaml,toml,csv}",
+		"./app.vue",
+	],
+	theme: {
+		extend: {},
+	},
+	plugins: [],
+};
+```
+
+- **Add CSS file & Tailwind directives**
+
+```bash
+mkdir -p ./assets/css && touch ./assets/css/tailwind.css
+```
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+- **Add CSS file path to nuxt.config.ts file**
+
+```js
+export default defineNuxtConfig({
+	css: ["@/assets/css/tailwind.css"],
+});
+```
+
+That's it! Now you can run your app and see your Tailwind CSS applied.
+
+## Using Nuxt Tailwind CSS Module
+
+Luckily, members of the nuxt community have created a module for Nuxt to use Tailwind CSS.
+
+> [Nuxt Tailwind CSS Module](https://tailwindcss.nuxtjs.org/)
+
+You can visit the setup page to install the module. [Setup](https://tailwindcss.nuxtjs.org/setup)
+
+- **Install Nuxt Tailwind CSS Module**
+
+```bash
+npm install --save-dev @nuxtjs/tailwindcss
+```
+
+- **Add the module to your nuxt.config file**
+
+```js
+modules: ["@nuxtjs/tailwindcss"];
+```
+
+- **Inintialize Tailwind Config**
+
+```bash
+npx tailwindcss init
+```
+
+That's it! Now you can run your app and see your Tailwind CSS applied.
+
+<br/>

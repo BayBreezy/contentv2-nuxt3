@@ -1,0 +1,208 @@
+<!-- ---
+title: Getting Started With ExpressJS
+description: ExpressJS is a minimalistic framework for Node.js. It can be used to create powerful APIs.
+head.title: Getting Started With ExpressJS
+head.description: ExpressJS is a minimalistic framework for Node.js. It can be used to create powerful APIs.
+--- -->
+
+# Routing
+
+Routing refers to how an application’s endpoints (URIs) respond to client requests.
+
+You define routing using methods of the Express app object that correspond to HTTP methods; for example, app.get() to handle GET requests and app.post to handle POST requests.
+
+## Routing Methods
+
+A route method is derived from one of the HTTP methods, and is attached to an instance of the express class.
+
+The following code is an example of routes that are defined for the GET and the POST methods to the root of the app.
+
+```js
+// GET method route
+app.get("/", (req, res) => {
+	res.send("GET request to the homepage");
+});
+
+// POST method route
+app.post("/", (req, res) => {
+	res.send("POST request to the homepage");
+});
+```
+
+## Add Route To Our App
+
+In Our express app, we will add a route that will be responsible for handling requests to our Dog resource
+
+Create a new folder called `routes` in the root of our project and add two files: index.js and dog.js.
+
+```bash
+mkdir routes && touch routes/index.js && touch routes/dog.js
+```
+
+In our index.js file, we need to add the following code:
+
+```js
+const router = require("express").Router();
+
+router.use("/dogs", require("./dog"));
+
+module.exports = router;
+```
+
+Inside the dog.js file, we need to add the following code:
+
+```js
+const router = require("express").Router();
+
+// Used to get all dogs
+router.get("/", (req, res) => {
+	res.send("Hello from dog");
+});
+
+// Used to get a dog by id
+router.get("/:id", (req, res) => {
+	res.send(`Hello from dog ${req.params.id}`);
+});
+
+// Used to create a new dog
+router.post("/", (req, res) => {
+	res.send("POST request to the dog");
+});
+
+// Used to update a dog
+router.put("/:id", (req, res) => {
+	res.send(`PUT request to the dog ${req.params.id}`);
+});
+
+// Used to delete a dog
+router.delete("/:id", (req, res) => {
+	res.send(`DELETE request to the dog ${req.params.id}`);
+});
+
+module.exports = router;
+```
+
+## Mock Database
+
+In a real application, we would likely have a database that stores our data.
+
+We can use a mock database to simulate this database.
+
+Inside the dog.js file at the top, we need to add the following code:
+
+```js
+let dogs = [
+	{
+		id: 1,
+		name: "Fido",
+		breed: "Poodle",
+	},
+	{
+		id: 2,
+		name: "Spot",
+		breed: "Dalmation",
+	},
+	{
+		id: 3,
+		name: "Buddy",
+		breed: "Pug",
+	},
+];
+```
+
+## Update Routes
+
+Now that we have our routes defined, we need to update our route functions/methods to use the mock database.
+
+```js
+// Used to get all dogs
+router.get("/", (req, res) => {
+	res.json(dogs);
+});
+
+// Used to get a dog by id
+router.get("/:id", (req, res) => {
+	const dog = dogs.find((dog) => dog.id === parseInt(req.params.id));
+	if (!dog) {
+		return res.status(404).send("Dog not found");
+	}
+	res.json(dog);
+});
+
+// Used to create a new dog
+router.post("/", (req, res) => {
+	let newDog = req.body;
+	newDog.id = dogs.length + 1;
+	dogs.push(newDog);
+	res.json(newDog);
+});
+
+// Used to update a dog
+router.put("/:id", (req, res) => {
+	const dog = dogs.find((dog) => dog.id === parseInt(req.params.id));
+	if (!dog) {
+		return res.status(404).send("Dog not found");
+	}
+	dog.name = req.body.name;
+	dog.breed = req.body.breed;
+	res.json(dog);
+});
+
+// Used to delete a dog
+router.delete("/:id", (req, res) => {
+	const dog = dogs.find((dog) => dog.id === parseInt(req.params.id));
+	if (!dog) {
+		return res.status(404).send("Dog not found");
+	}
+	dogs = dogs.filter((dog) => dog.id !== parseInt(req.params.id));
+	res.json(dog);
+});
+```
+
+## Update Server.js File
+
+Now that our dog resource is updated, we need to add our routes to our server.js file.
+
+remove this from the server.js file:
+
+```js
+// ...
+app.get("/", (req, res) => {
+	res.send("Hello World!");
+});
+// ...
+```
+
+Add the following code to the server.js right before calling the listen function:
+
+```js
+app.use("/api", require("./routes"));
+```
+
+## Test Our Routes
+
+Restart the dev server and test the endpoints with a HTTP Client. An HttpClient can be used to send requests and retrieve their responses.
+
+Send a GET request to http://localhost:3000/api/dogs. The repsonse should be a JSON array of all dogs.
+
+```json
+[
+	{
+		"id": 1,
+		"name": "Fido",
+		"breed": "Poodle"
+	},
+	{
+		"id": 2,
+		"name": "Spot",
+		"breed": "Dalmation"
+	},
+	{
+		"id": 3,
+		"name": "Buddy",
+		"breed": "Pug"
+	}
+]
+```
+
+<br />
