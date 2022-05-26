@@ -31,7 +31,7 @@ export default <RouterConfig>{
 		return new Promise((res, rej) => {
 			setTimeout(() => {
 				res({ top: 0 });
-			}, 750);
+			}, 10);
 		});
 	},
 };
